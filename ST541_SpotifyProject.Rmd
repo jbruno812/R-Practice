@@ -1,0 +1,141 @@
+---
+title: "SpotifyProject_Exploration"
+author: "John Bruno"
+date: "11/25/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+top10s <- read.csv("./top10s.csv")
+top10s = subset(top10s, select = -c(X) )
+summary(top10s)
+cor(top10s[,4:14])
+top10s.shape
+```
+```{r}
+dim(top10s)
+```
+
+
+# BPM
+
+```{r}
+bpmM <- aggregate(bpm ~ year, top10s, mean)
+```
+
+```{r}
+plot(bpmM$year, bpmM$bpm, main="BPM Trend",
+   xlab="Years", ylab="Average BPM", type = "l")
+abline(lm(bpmM$bpm ~ bpmM$year), col="red")
+```
+# Energy
+
+```{r}
+nrgyM <- aggregate(nrgy ~ year, top10s, mean)
+```
+
+```{r}
+plot(nrgyM$year, nrgyM$nrgy, main="Energy Trend",
+   xlab="Years", ylab="Average Energy", type = "l")
+abline(lm(nrgyM$nrgy ~ nrgyM$year), col="red")
+```
+# Dance
+
+```{r}
+dnceM <- aggregate(dnce ~ year, top10s, mean)
+```
+
+```{r}
+plot(dnceM$year, dnceM$dnce, main="Danceability Trend",
+   xlab="Years", ylab="Average Danceability", type = "l")
+abline(lm(dnceM$dnce ~ dnceM$year), col="red")
+```
+
+# dB
+
+```{r}
+dBM <- aggregate(dB ~ year, top10s, mean)
+```
+
+```{r}
+plot(dBM$year, dBM$dB, main="Loudness Trend",
+   xlab="Years", ylab="Average Decibels", type = "l")
+abline(lm(dBM$dB ~ dBM$year), col="red")
+```
+
+# Liveness
+
+```{r}
+liveM <- aggregate(live ~ year, top10s, mean)
+```
+
+```{r}
+plot(liveM$year, liveM$live, main="Liveness Trend",
+   xlab="Years", ylab="Average Liveness", type = "l")
+abline(lm(liveM$live ~ liveM$year), col="red")
+```
+
+# Valence
+
+```{r}
+valM <- aggregate(val ~ year, top10s, mean)
+```
+
+```{r}
+plot(valM$year, valM$val, main="Positivity Trend",
+   xlab="Years", ylab="Average Valence", type = "l")
+abline(lm(valM$val ~ valM$year), col="red")
+```
+
+# Duration
+
+```{r}
+durM <- aggregate(dur ~ year, top10s, mean)
+```
+
+```{r}
+plot(durM$year, durM$dur, main="Duration Trend",
+   xlab="Years", ylab="Average Duration", type = "l")
+abline(lm(durM$dur ~ durM$year), col="red")
+```
+
+# Acoustic
+
+```{r}
+acousM <- aggregate(acous ~ year, top10s, mean)
+```
+
+```{r}
+plot(acousM$year, acousM$acous, main="Acoustic Trend",
+   xlab="Years", ylab="Average Acoustics", type = "l")
+abline(lm(acousM$acous ~ acousM$year), col="red")
+```
+
+# Speech
+
+```{r}
+spchM <- aggregate(spch ~ year, top10s, mean)
+```
+
+```{r}
+plot(spchM$year, spchM$spch, main="Spoken Word Trend",
+   xlab="Years", ylab="Average Speech", type = "l")
+abline(lm(spchM$spch ~ spchM$year), col="red")
+```
+
+# Popularity (Biased)
+
+```{r}
+popM <- aggregate(pop ~ year, top10s, mean)
+```
+
+```{r}
+plot(popM$year, popM$pop, main="Popularity Trend",
+   xlab="Years", ylab="Average Popularity", type = "l")
+abline(lm(popM$pop ~ popM$year), col="red")
+```
