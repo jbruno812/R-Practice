@@ -1,5 +1,5 @@
 ---
-title: "ST 541_HW1_JohnBruno"
+title: "1_JohnBruno"
 author: "John Bruno"
 date: "9/8/2020"
 output: pdf_document
