@@ -1,0 +1,92 @@
+---
+title: "ST 541_HW4_JohnBruno"
+author: "John Bruno"
+date: "10/27/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Page 147, Question 3
+
+```{r}
+# Insert Data
+latour <- read.table('https://gattonweb.uky.edu/sheather/book/docs/datasets/latour.txt', header=TRUE)
+head(latour)
+```
+# Part A
+
+```{r}
+# 1st model from textbook
+original <- lm(Quality ~ EndofHarvest + Rain + Rain:EndofHarvest, data=latour)
+summary(original)
+```
+```{r}
+# 2nd model from textbook
+partial <- lm(Quality ~ EndofHarvest + Rain, data=latour)
+summary(partial)
+```
+```{r}
+# Anova to compare models
+anova(original,partial)
+```
+From the above anova analysis, we see that the coefficient of the interaction term is statistically significant. The rate of change in quality rating depends on whether there has been any unwanted rain at vintage.
+
+# Part B
+
+```{r}
+# (i) No unwanted rain at harvest
+(-1/coefficients(original)[2])
+```
+With no unwanted rain, it takes almost 32 days of delay to the end of harvest when decreasing the quality rating by 1 point.
+
+```{r}
+(-1/(coefficients(original)[2] + coefficients(original)[4]))
+```
+With some unwanted rain, it takes almost 9 days of delay to the end of harvest when decreasing the quality rating by 1 point.
+
+
+# Question 3 College Football Team Dataset
+
+```{r}
+# Read data
+library("readxl")
+
+football <- read_excel("C:\\Users\\jbrun\\Desktop\\UA 2020\\Fall\\ST 541 (R)\\HW 4\\CFB2019_partial.xlsx")
+
+head(football)
+```
+```{r}
+# Creating win rate column
+football$winrate <- (football$win/football$Games*100)
+head(football)
+```
+
+```{r}
+# Model
+lm.football <- lm(winrate ~ Off.Rank + Def.Rank + football$`First Down Rank` + football$`4th Down Rank` + football$`Penalty Rank` + football$`Sack Rank` + football$`Turnover Rank` + football$`Rushing Def Rank` + football$`Rushing Off Rank`, data=football)
+
+summary(lm.football)
+```
+Model is highly significant and has 4 out of 9 significant predictors.
+
+```{r}
+# Checking the VIF for all predictors
+library(car)
+vif(lm.football)
+```
+There isn't much multicollinearity issue in the model. Although, there may be some issue with Off.Rank and First Down Rank.
+
+Off.Rank may not be significant because of its high correlation with First Down Rank. Lets check with a new model.
+```{r}
+# Model 2
+lm2.football <- lm(winrate ~ Off.Rank + Def.Rank + football$`4th Down Rank` + football$`Penalty Rank` + football$`Sack Rank` + football$`Turnover Rank` + football$`Rushing Def Rank` + football$`Rushing Off Rank`, data=football)
+
+summary(lm2.football)
+```
+Off.Rank is significant now, so that was why it wasn't before.
+
+
+I think the Points Per Game should be included to predict the win rate, since it is probably highly significant.

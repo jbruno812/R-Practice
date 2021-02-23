@@ -1,0 +1,93 @@
+---
+title: "ST 541_HW3_JohnBruno"
+author: "John Bruno"
+date: "9/29/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 2: Baseball Model
+
+```{r}
+# Read data
+baseball <- read.csv("C:\\Users\\jbrun\\Desktop\\UA 2020\\Fall\\ST 541 (R)\\HW 3\\baseball.csv",header = TRUE)
+# Edit data to only look at players within 10 year in the major league
+baseball <- baseball[baseball$Years <= 10,]
+head(baseball)
+```
+```{r}
+str(baseball)
+```
+```{r}
+# Summarizing variables (Salary)
+summary(baseball$Salary)
+```
+
+
+```{r}
+boxplot(baseball$Salary, main = "Annual salary on opening day in thousands of dollars",horizontal = TRUE)
+```
+From the above salary distribution, we see that most salaries are in the 150k-668k range. 6 outliers after 1.5m. 
+
+```{r}
+# Summarizing variables (Career Homeruns)
+summary(baseball$CHmRun)
+```
+
+
+```{r}
+boxplot(baseball$CHmRun, main = "Number of homeruns in careers",horizontal = TRUE)
+```
+From the above career homerun distribution, we see that most careers have around 9-53 homeruns. 8 outliers after 110.
+
+```{r}
+# Plotting relationship between salary and career homeruns
+plot(baseball$CHmRun,baseball$Salary,xlab = "Career Homeruns",ylab = "Salary",main = "Career Homeruns vs Salary")
+```
+The above scatter plot shows a slight positive relationship between salary and career homeruns. Generally, the more career homeruns, the higher the salary.
+
+# Fitting simple linear regression model to predict salary with career homeruns
+
+```{r}
+baseball.fit1 <- lm(baseball$Salary~baseball$CHmRun)
+summary(baseball.fit1)
+```
+# Diagnostic
+
+```{r}
+par(mfrow = c(2,2))
+plot(baseball.fit1)
+```
+The above model shows the average salary improve $6.4k with an additional homerun. Homeruns have a slight positive relationship with salary. However with a R^2 of .383, the explanation of salary by homeruns is very limited. Also looking at the QQ plot, the residuals deviate, so they don't follow a normal random error. Furthermore, looking at the other plots, the residuals aren't spread evenly (Scale-Location), the errors aren't distributed around the horizontal line (Residuals vs Fitted), and there are some outlying values which are influencing the regression results (Residual vs Leverage).From the  plots observation #153 & 164 look like the main problems in this model. I will get rid of observations 153 and 154 in the next model.
+
+
+Improving model fit
+
+```{r}
+# Removing specific observations
+b2 <- update(baseball.fit1, subset=(1:164) [-c(153,164)])
+summary(b2)
+```
+
+
+```{r}
+par(mfrow = c(2,2))
+plot(b2)
+```
+
+
+
+```{r}
+# Model is better fitted now but will also get rid of 55...
+b2 <- update(baseball.fit1, subset=(1:164) [-c(55,153,164)])
+summary(b2)
+```
+```{r}
+par(mfrow = c(2,2))
+plot(b2)
+```
+The above model shows the average salary improves $6.7k with an additional homerun instead of the first model's 6.4k, which is more accurate based on the smaller std. error at.46 instead of .58. 62% of the variability in the response can be explained by my predictor instead of the first model's 38%. According to the diagnostics, there is still room for improvements but the model summary statistics got much better after removing outlying residuals.
+

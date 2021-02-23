@@ -1,0 +1,135 @@
+---
+title: "Variable Selection in Regression"
+author: "Qin Wang"
+date: "07/16/2020"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+options(width = 80)
+```
+
+# Installing and Using R
+
+R is a free-to-use software that is very popular in statistical computing. You can download R from https://www.r-project.org. The latest version is 3.6.1. Another software that makes using R easier is Rstudio, which is available at https://www.rstudio.com. You can find many useful on-line tutorials that help you set-up these two software. This guild is created using R Markdown (https://rmarkdown.rstudio.com/), which is a feature provided by RStudio. 
+
+
+# Model
+
+$$ y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p + e, $$
+where $\beta_0$ is the ($y-$)intercept, $\beta_1, \ldots, \beta_p$ are the slopes, and $e$ is the random error.
+
+In matrix form, 
+
+$$ y_i= \mathbf{\beta}^T \mathbf{x}_i +e, ~~~i=1,\ldots,n. $$
+
+$$
+Y = \left(\begin{array}{c}
+             y_1 \\
+             y_2 \\
+             \vdots         \\
+             y_n
+             \end{array}  \right), ~~
+\mathbf{X}=\left(\begin{array}{c}
+             1 ~~x_{11} \cdots x_{1p} \\
+             1 ~~x_{21} \cdots x_{2p}  \\
+             \vdots   \\
+             1 ~~x_{n1} \cdots x_{np}   
+             \end{array}  \right), ~~
+\boldsymbol{\beta} = \left(\begin{array}{c}
+             \beta_1 \\
+             \beta_2 \\
+             \vdots         \\
+             \beta_p
+             \end{array}  \right), ~~
+e = \left(\begin{array}{c}
+             e_1 \\
+             e_2 \\
+             \vdots         \\
+             e_n
+             \end{array}  \right) ~~             
+$$
+
+
+
+
+
+# Best subset selection
+
+Consider all possible subsets: $2^p$ models.
+
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+setwd("C:/Users/qwang57/Google Drive/ST 452/R files/Data")
+
+bridge <- read.table("bridge.txt", header=TRUE)
+attach(bridge)
+
+#Figure 7.1 on page 235
+m1 <- lm(log(Time)~log(DArea)+log(CCost)+log(Dwgs)+log(Length)+log(Spans))
+summary(m1)
+
+logDArea <- log(DArea)
+logCCost <- log(CCost)
+logDwgs <- log(Dwgs)
+logLength <- log(Length)
+logSpans <- log(Spans)
+X <- cbind(logDArea,logCCost,logDwgs,logLength,logSpans)
+
+n <- length(m1$residuals)
+
+library(leaps)
+b <- regsubsets(as.matrix(X),log(Time))
+rs <- summary(b)
+par(mfrow=c(1,2))
+plot(1:5,rs$adjr2,xlab="Subset Size",ylab="Adjusted R-squared")
+
+rs$adjr2
+```
+
+` `  
+` `  
+ 
+
+
+# Stepwise selection
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+
+## Backward elimination using AIC
+backAIC <- step(m1,direction="backward", data=bridge)
+
+
+## Backward elimination using BIC
+backBIC <- step(m1,direction="backward", data=bridge, k=log(n))
+
+
+## Forward selection using AIC
+
+mint <- lm(log(Time)~1,data=bridge)
+forwardAIC <- step(mint,scope=list(lower=~1, 
+upper=~log(DArea)+log(CCost)+log(Dwgs)+log(Length)+log(Spans)),
+direction="forward", data=bridge)
+
+
+## Forward selection using BIC
+forwardBIC <- step(mint,scope=list(lower=~1, 
+upper=~log(DArea)+log(CCost)+log(Dwgs)+log(Length)+log(Spans)),
+direction="forward", data=bridge,k=log(n))
+
+detach(bridge)
+```
+
+
+
+
+

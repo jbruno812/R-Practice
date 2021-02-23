@@ -1,0 +1,264 @@
+---
+title: "Simple Linear Regression"
+author: "Qin Wang"
+date: "06/18/2020"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+options(width = 80)
+```
+
+# Installing and Using R
+
+R is a free-to-use software that is very popular in statistical computing. You can download R from https://www.r-project.org. The latest version is 3.6.1. Another software that makes using R easier is Rstudio, which is available at https://www.rstudio.com. You can find many useful on-line tutorials that help you set-up these two software. This guild is created using R Markdown (https://rmarkdown.rstudio.com/), which is a feature provided by RStudio. 
+
+
+# Model
+
+$$ y=\beta_0 + \beta_1 x + e, $$
+where $\beta_0$ is the ($y-$)intercept, $\beta_1$ is the slope, and $e$ is the random error.
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '100%'}
+x <- c(173, 169, 176, 166, 161, 164, 160, 158, 180, 187)
+y <- c(80, 68, 72, 75, 70, 65, 62, 60, 85, 92) # plot scatterplot and the regression line
+mod1 <- lm(y ~ x)
+plot(x, y, xlim=c(min(x)-5, max(x)+5), ylim=c(min(y)-10, max(y)+10))
+abline(mod1, lwd=2)
+
+
+# calculate residuals and predicted values
+res <- signif(residuals(mod1), 5)
+pre <- predict(mod1) # plot distances between points and the regression line
+segments(x, y, x, pre, col="red")
+
+# add labels (res values) to points
+library(calibrate)
+textxy(x, y, res, cex=0.7)
+```
+
+What is the best model / line / $(\beta_0, \beta_1)$?
+
+
+
+
+# Parameter estimation
+
+Least squares: minimizing the residuals (model errors).
+
+$$ RSS = \frac{1}{n} \sum_{i=1}^n e_i^2 = \frac{1}{n} \sum_{i=1}^n (y_i-b_0-b_1x_i)^2, $$
+where $(b_0, b_1)$ are the estimators of the intercept and slope respectively.
+
+Why are the squared residuals?  
+` `  
+` `  
+
+
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+setwd("C:/Users/qwang57/Google Drive/ST 452/R files/Data")
+
+# Figure 2.1 (page 16 in textbook)
+production <- read.table("production.txt",header=TRUE)
+attach(production)
+
+par(mfrow=c(1,1))
+plot(production$RunSize,production$RunTime,xlab="Run Size", ylab="Run Time")
+
+# Least squares estimators
+m1 <- lm(RunTime~RunSize)
+summary(m1)
+```
+
+The estimated model/the least square line of best fit:
+$$ \hat{y} = 149.75 + 0.259x. $$
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+plot(production$RunSize,production$RunTime,xlab="Run Size", ylab="Run Time")
+abline(lsfit(production$RunSize, production$RunTime))
+```
+
+The residual variance $\sigma^2$ is estimated as
+
+$$ s^2 = \frac{RSS}{n-2} = \frac{1}{n-2} \sum_{i=1}^n \hat{e}_i^2. $$
+This is also called "Mean Squared Residuals".
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+anova(m1)
+
+```
+
+Here, "Residual Sum Sq."=4754.6", and "Mean Sq. Residuals"=264.1.
+
+$s$ can be obtained directly from the parameter estimate output as `Residual standard error'. 
+$$s=Residual ~~standard ~~error = 16.25.$$
+
+# Parameter inference
+
+## Confidence intervals for regression coefficients
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+coef(m1)
+confint(m1)
+
+confint(m1, level=0.95)
+confint(m1, level=0.90)
+confint(m1, level=0.99)
+```
+
+
+## Hypothesis test on the slope $\beta_1$
+
+$$ H_0: ~~ \beta_1 = 0, $$
+vs. 
+$$ H_0: ~~ \beta_1 \ne 0. $$
+
+The test statistic
+$$ T = \frac{\hat{\beta}_1}{se(\hat{\beta}_1)} \sim ~t_{n-2}, $$
+where $\hat{\beta}_1$ and $se(\hat{\beta}_1)$ can be obtained from the output.
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+summary(m1)
+```
+
+$\hat{\beta}_1=0.25924$ and $se(\hat{\beta}_1)=0.03714$.
+
+$T=0.25924/0.03714 = 6.98$, and the $p$-value=`r 2*pt(6.98, 18, lower.tail=FALSE)`.
+```{r, collapse=TRUE}
+2*pt(6.98, 18, lower.tail=FALSE)
+```
+
+
+
+
+# Prediction
+
+Confidence interval (for the mean response E($y|x=x^*$))
+
+
+Prediction interval (for the individual response $y|x=x^*$)
+
+
+```{r, collapse=TRUE}
+predict(m1,newdata=data.frame(RunSize=c(50,100,150,200,250,300,350)),interval="confidence",level=0.95)
+predict(m1,newdata=data.frame(RunSize=c(50,100,150,200,250,300,350)),interval="prediction",level=0.95)
+```
+
+
+
+# Model assessment
+
+## ANOVA Table
+
+SST = SSreg + RSS
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+anova(m1)
+
+```
+
+## $R^2$ or R-squared
+
+$$ R^2 = \frac{SSreg}{SST} = 1- \frac{RSS}{SST}. $$
+
+
+
+# Residual diagnostics
+
+Residuals -- plot
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+plot(production$RunSize,production$RunTime,xlab="Run Size", ylab="Run Time")
+abline(lsfit(production$RunSize, production$RunTime))
+```
+
+Residuals -- calculation
+
+```{r, collapse=TRUE, linewidth=60}
+library(MASS)
+predict(m1, se.fit=TRUE)
+
+resid(m1)
+
+cbind(production$RunTime, m1$fitted.values, m1$residuals, rstandard(m1), studres(m1))
+
+influence.measures(m1)
+
+par(mfrow = c(2, 2))
+plot(m1)
+
+```
+
+` `  
+` `  
+
+Example -- US Treasury Bond Prices
+
+```{r, collapse=TRUE, linewidth=60}
+bonds <- read.table("C:/Users/qwang57/Google Drive/ST 452/R files/Data/bonds.txt",header=TRUE)
+attach(bonds)
+
+#Figure 3.9 on page 63
+par(mfrow=c(1,1))
+plot(CouponRate,BidPrice,xlab="Coupon Rate (%)", ylab="Bid Price ($)",ylim=c(85,120),xlim=c(2,14))
+abline(lsfit(CouponRate,BidPrice))
+
+#Regression output on page 63 
+m1 <- lm(BidPrice~CouponRate)
+summary(m1)
+
+#95% confidence intervals on page 63
+round(confint(m1,level=0.95),3)
+
+#Table 3.4 on page 62
+leverage1 <- hatvalues(m1)
+StanRes1 <- rstandard(m1)
+residual1 <- m1$residuals
+cbind(Case,CouponRate,BidPrice,round(leverage1,3),round(residual1,3),round(StanRes1,3))
+
+## assess the leverage points
+## Refit the model without three influential points
+
+#Figure 3.10 on page 64
+plot(CouponRate,StanRes1,xlab="Coupon Rate (%)", ylab="Standardized Residuals",xlim=c(2,14))
+abline(h=2,lty=2)
+abline(h=-2,lty=2)
+identify(CouponRate,StanRes1,Case)
+# Click near a point to identify its Case. 
+# This continues until you select "Stop" after clicking the right mouse button.
+
+#Regression output on page 66
+m2 <- update(m1, subset=(1:35)[-c(4,13,35)])
+summary(m2)
+
+#Figure 3.11 on page 65
+plot(CouponRate[-c(4,13,35)],BidPrice[-c(4,13,35)],xlab="Coupon Rate (%)", ylab="Bid Price ($)",ylim=c(85,120),xlim=c(2,14),main="Regular Bonds")
+abline(m2)
+
+#Figure 3.12 on page 67
+StanRes2 <- rstandard(m2)
+plot(CouponRate[-c(4,13,35)],StanRes2,xlab="Coupon Rate (%)", ylab="Standardized Residuals",xlim=c(2,14),main="Regular Bonds")
+abline(h=2,lty=2)
+abline(h=-2,lty=2)
+
+#Figure 3.13 on page 68
+cd1 <- cooks.distance(m1)
+plot(CouponRate,cd1,xlab="Coupon Rate (%)", ylab="Cook's Distance")
+abline(h=4/(35-2),lty=2)
+identify(CouponRate,cd1,Case)
+# Click near a point to identify its Case. 
+# This continues until you select "Stop" after clicking the right mouse button.
+
+detach(bonds)
+```
+
+

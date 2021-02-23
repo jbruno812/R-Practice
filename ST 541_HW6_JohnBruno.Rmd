@@ -1,0 +1,102 @@
+---
+title: "ST 541_HW6_JohnBruno"
+author: "John Bruno"
+date: "11/29/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 2 College Football Team Dataset
+
+```{r}
+# Read data
+library("readxl")
+
+football <- read_excel("C:\\Users\\jbrun\\Desktop\\UA 2020\\Fall\\ST 541 (R)\\HW 5\\CFB2019_partial.xlsx")
+
+head(football)
+```
+
+```{r}
+# Creating win rate column
+football$winrate <- (football$win/football$Games)
+head(football)
+```
+```{r}
+# Creating binary variable win_season
+football$win_season <- ifelse(football$winrate > 0.5, 1, 0)
+```
+
+```{r}
+football$win_season <- as.factor(football$win_season)
+```
+
+
+```{r}
+head(football)
+```
+
+
+```{r}
+# Logistic regression model with win_season as response
+m1 <- glm(win_season ~ Off.Rank + Def.Rank + `First Down Rank` + `4th Down Rank` + `Penalty Rank` + `Sack Rank` + `Turnover Rank` + `Rushing Def Rank` + `Rushing Off Rank`, family=binomial(link=logit), data=football)
+summary(m1)
+```
+
+```{r}
+# Backwards elimination
+m1.step <- step(m1)
+summary(m1.step)
+```
+In the final model, the most significant predictors are Def.Rank, First Down Rank, followed by a slightly significant Sack Rank. Turnover Rank is included in model but not significant.
+
+```{r}
+# Logistic regression model with best AIC
+m2 <- glm(win_season ~Def.Rank + `First Down Rank` + `Sack Rank` + `Turnover Rank`, family=binomial(link=logit), data=football)
+summary(m2)
+```
+
+
+```{r}
+# Misclassification error rate
+pred <- predict(m2, type="response")
+pred
+cbind(football$win_season, pred)
+
+table(round(pred))
+sum(pred>0.5)
+```
+```{r}
+class.football <- data.frame(response = football$win_season, predicted = round(pred,0))
+xtabs(~ predicted + response, data = class.football)
+```
+
+```{r}
+21/109
+```
+
+```{r}
+# ROC curve and AUC measure
+library(pROC)
+football.roc <- roc(football$win_season ~ pred, plot = TRUE, print.auc = TRUE)
+```
+```{r}
+library(ROCR)    
+pred <- prediction(pred, football$win_season)    
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")     
+plot(perf, col=rainbow(7), main="ROC curve", xlab="Specificity", 
+     ylab="Sensitivity")   
+```
+```{r}
+# Goodness-of-fit
+library(ResourceSelection)
+hoslem.test(football$win_season, fitted(m2), g=10)
+```
+
+
+
+
+

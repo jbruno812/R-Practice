@@ -1,0 +1,733 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Introduction to R},
+  pdfauthor={Qin Wang or},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Introduction to R}
+\author{Qin Wang or}
+\date{07/19/2019}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{installing-and-using-r}{%
+\section{Installing and Using R}\label{installing-and-using-r}}
+
+R is a free-to-use software that is very popular in statistical
+computing. You can download R from \url{https://www.r-project.org}. The
+latest version is 3.6.1. Another software that makes using R easier is
+Rstudio, which is available at \url{https://www.rstudio.com}. You can
+find many useful on-line tutorials that help you set-up these two
+software. This guild is created using R Markdown
+(\url{https://rmarkdown.rstudio.com/}), which is a feature provided by
+RStudio.
+
+\hypertarget{basic-mathematical-operations}{%
+\section{Basic Mathematical
+Operations}\label{basic-mathematical-operations}}
+
+We will start with some basic operations. Try type-in the following
+commands into your R console and start to explore yourself. Most of them
+are self-explanatory. Lines with a \texttt{\#} in the front are
+comments, which will not be executed. For displaying, lines with
+\texttt{\#\#} in the front in the following chunk of code are outputs
+from the previous line. This is a particular feature created by R
+Markdown, which integrates text and code in a single document.
+\vspace{12pt}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# Basic mathematics}
+    \DecValTok{1} \OperatorTok{+}\StringTok{ }\DecValTok{3}
+\CommentTok{## [1] 4}
+    \DecValTok{3}\OperatorTok{*}\DecValTok{5}
+\CommentTok{## [1] 15}
+    \DecValTok{3}\OperatorTok{^}\DecValTok{5}
+\CommentTok{## [1] 243}
+    \KeywordTok{exp}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\CommentTok{## [1] 7.389056}
+    \KeywordTok{log}\NormalTok{(}\DecValTok{3}\NormalTok{)}
+\CommentTok{## [1] 1.098612}
+    \KeywordTok{log2}\NormalTok{(}\DecValTok{3}\NormalTok{)}
+\CommentTok{## [1] 1.584963}
+    \KeywordTok{factorial}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\CommentTok{## [1] 120}
+\end{Highlighting}
+\end{Shaded}
+
+\vspace{12pt}
+
+Most of our operations will be performed on data objects, such as
+vectors and matrices. They can be created within R, loaded from existing
+package or read-in from a file (to be discussed later on). For now,
+let's create them in R. Note that for data objects, common mathematical
+operations can be performed such as matrix multiplication, using the
+\texttt{\%*\%} sign.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# vector}
+    \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{)}
+\CommentTok{## [1] 1 2 3 4}
+    \CommentTok{# matrix }
+    \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\CommentTok{##      [,1] [,2]}
+\CommentTok{## [1,]    1    3}
+\CommentTok{## [2,]    2    4}
+    \CommentTok{# create matrix from vectors }
+\NormalTok{    x =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{); y =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)}
+    \KeywordTok{cbind}\NormalTok{(x,y)}
+\CommentTok{##      x y}
+\CommentTok{## [1,] 1 1}
+\CommentTok{## [2,] 1 0}
+\CommentTok{## [3,] 1 1}
+\CommentTok{## [4,] 0 0}
+\CommentTok{## [5,] 0 1}
+\CommentTok{## [6,] 0 0}
+    \CommentTok{# matrix multiplication}
+    \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{), }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{) }\OperatorTok{%*%}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(x,y))}
+\CommentTok{##      [,1] [,2] [,3] [,4] [,5] [,6]}
+\CommentTok{## [1,]    4    1    4    0    3    0}
+\CommentTok{## [2,]    6    2    6    0    4    0}
+    \CommentTok{# some simple operations }
+\NormalTok{    x[}\DecValTok{3}\NormalTok{]}
+\CommentTok{## [1] 1}
+\NormalTok{    x[}\DecValTok{2}\OperatorTok{:}\DecValTok{5}\NormalTok{]}
+\CommentTok{## [1] 1 1 0 0}
+    \KeywordTok{cbind}\NormalTok{(x,y)[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{, ]}
+\CommentTok{##      x y}
+\CommentTok{## [1,] 1 1}
+\CommentTok{## [2,] 1 0}
+\NormalTok{    x }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\CommentTok{## [1] 2 2 2 1 1 1}
+    \KeywordTok{length}\NormalTok{(x)}
+\CommentTok{## [1] 6}
+    \KeywordTok{dim}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(x,y))}
+\CommentTok{## [1] 6 2}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{random-number-generations-from-a-distribution}{%
+\section{Random Number Generations from a
+Distribution}\label{random-number-generations-from-a-distribution}}
+
+Random number generation is important for statistical simulation. R
+provides functions to generate random observations from a given
+distribution. For example, the normal distribution and the binomial
+distribution. Usually, random number generation function starts with
+`\texttt{r}' and then the distribution name. For example,
+\texttt{rnorm()}, \texttt{rt()}, \texttt{rbinom()}, etc.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# generate 10 Bernoulli random variables as a vector}
+    \KeywordTok{rbinom}\NormalTok{(}\DataTypeTok{n=}\DecValTok{10}\NormalTok{, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.5}\NormalTok{)}
+\CommentTok{##  [1] 1 0 1 0 1 1 0 0 0 1}
+    \CommentTok{# 10 random normally distributed variables}
+    \KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{10}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\CommentTok{##  [1]  1.6964734  1.7197866 -1.2734493  1.6068620 -2.5319824 -0.4462294  0.4586598 -0.2274168  2.0479469 -0.3802007}
+\end{Highlighting}
+\end{Shaded}
+
+We can also calculate the probability density function (pdf) and
+cumulative distribution function (cdf) of random variables. For example,
+the normal pdf and cdf function can be evaluated on a sequence of
+points, which can be visualized on a plot.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# generate a sequence of numbers from -2 to 2}
+\NormalTok{    x =}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\OperatorTok{-}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DataTypeTok{by =} \FloatTok{0.2}\NormalTok{)}
+    \CommentTok{# calculate normal pdf on these points}
+\NormalTok{    fx =}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+    
+    \CommentTok{# plot them in a figure}
+    \KeywordTok{plot}\NormalTok{(x, fx, }\DataTypeTok{pch =} \DecValTok{16}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-4-1} \end{center}
+
+\vspace{12pt}
+
+If we need to replicate the results, we can set a random seed
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# after setting the seed, the random generation will follow a particular sequence}
+    \KeywordTok{set.seed}\NormalTok{(}\DecValTok{697}\NormalTok{)}
+    \KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{4}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{1}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\CommentTok{## [1] 1.4531482 3.5246932 3.2333684 0.1382969}
+    
+    \CommentTok{# if we don't reset the seed, a new set of random numbers will be generated }
+    \KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{4}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{1}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\CommentTok{## [1] 2.702917 2.591680 3.371286 1.359250}
+    
+    \CommentTok{# if we rest the seed, we will replicate exactly the same results as the first vector}
+    \KeywordTok{set.seed}\NormalTok{(}\DecValTok{697}\NormalTok{)}
+    \KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{4}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{1}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\CommentTok{## [1] 1.4531482 3.5246932 3.2333684 0.1382969}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{descriptive-statistics-of-data}{%
+\section{Descriptive Statistics of
+Data}\label{descriptive-statistics-of-data}}
+
+\vspace{12pt}
+
+Statistical functions that provide a summary of the data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    x =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{100}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{1}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\NormalTok{    y =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n=}\DecValTok{100}\NormalTok{, }\DataTypeTok{mean =} \DecValTok{2}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+    \KeywordTok{sum}\NormalTok{(x)}
+\CommentTok{## [1] 70.46658}
+    \KeywordTok{mean}\NormalTok{(x)}
+\CommentTok{## [1] 0.7046658}
+    \KeywordTok{var}\NormalTok{(x)}
+\CommentTok{## [1] 4.122945}
+    \KeywordTok{median}\NormalTok{(x)}
+\CommentTok{## [1] 0.8064754}
+    \KeywordTok{quantile}\NormalTok{(x, }\KeywordTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.75}\NormalTok{))}
+\CommentTok{##        25%        50%        75% }
+\CommentTok{## -0.5204091  0.8064754  2.1611846}
+    \KeywordTok{cor}\NormalTok{(x, y)}
+\CommentTok{## [1] -0.004062204}
+\end{Highlighting}
+\end{Shaded}
+
+\vspace{12pt}
+
+For discrete data, we usually use the table function
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{); n =}\StringTok{ }\DecValTok{1000}
+\NormalTok{    x =}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(n, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.75}\NormalTok{)}
+\NormalTok{    y =}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(n, }\DataTypeTok{size =} \DecValTok{3}\NormalTok{, }\DataTypeTok{prob =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\FloatTok{0.3}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{))}
+    \KeywordTok{table}\NormalTok{(x)}
+\CommentTok{## x}
+\CommentTok{##   0   1 }
+\CommentTok{## 248 752}
+    
+    \CommentTok{# this will be a cross table}
+    \KeywordTok{table}\NormalTok{(x, y)}
+\CommentTok{##    y}
+\CommentTok{## x     0   1   2   3}
+\CommentTok{##   0 128  79  34   7}
+\CommentTok{##   1 342 267 125  18}
+\end{Highlighting}
+\end{Shaded}
+
+For a mixture of discrete and continuous data (multiple variables), we
+often use a data.frame
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# data.frame is a special data structure that can store both factor and numeric variables}
+\NormalTok{    z =}\StringTok{ }\KeywordTok{runif}\NormalTok{(n, }\DataTypeTok{min =} \DecValTok{18}\NormalTok{, }\DataTypeTok{max =} \DecValTok{65}\NormalTok{)}
+\NormalTok{    data =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\StringTok{"Gender"}\NormalTok{ =}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(x), }\StringTok{"Group"}\NormalTok{ =}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(y), }\StringTok{"Age"}\NormalTok{ =}\StringTok{ }\NormalTok{z)}
+    \KeywordTok{levels}\NormalTok{(data}\OperatorTok{$}\NormalTok{Gender) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"male"}\NormalTok{, }\StringTok{"female"}\NormalTok{)}
+    \KeywordTok{levels}\NormalTok{(data}\OperatorTok{$}\NormalTok{Group) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"patient"}\NormalTok{, }\StringTok{"physician"}\NormalTok{, }\StringTok{"engineer"}\NormalTok{, }\StringTok{"statistician"}\NormalTok{)}
+    
+    \CommentTok{# a peek at the top 3 entries of the data}
+    \KeywordTok{head}\NormalTok{(data, }\DecValTok{3}\NormalTok{)}
+\CommentTok{##   Gender     Group      Age}
+\CommentTok{## 1 female physician 58.97484}
+\CommentTok{## 2 female physician 63.45826}
+\CommentTok{## 3 female   patient 58.74506}
+    
+    \CommentTok{# a brief summary}
+    \KeywordTok{summary}\NormalTok{(data)}
+\CommentTok{##     Gender             Group          Age       }
+\CommentTok{##  male  :248   patient     :470   Min.   :18.03  }
+\CommentTok{##  female:752   physician   :346   1st Qu.:29.07  }
+\CommentTok{##               engineer    :159   Median :40.51  }
+\CommentTok{##               statistician: 25   Mean   :41.02  }
+\CommentTok{##                                  3rd Qu.:53.43  }
+\CommentTok{##                                  Max.   :64.99}
+\end{Highlighting}
+\end{Shaded}
+
+As a real example, we take the classical \texttt{iris} data, which can
+be loaded directly from R.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# read-in the data}
+    \KeywordTok{data}\NormalTok{(iris)}
+    
+    \CommentTok{# a peek at the top observations }
+    \KeywordTok{head}\NormalTok{(iris)}
+\CommentTok{##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species}
+\CommentTok{## 1          5.1         3.5          1.4         0.2  setosa}
+\CommentTok{## 2          4.9         3.0          1.4         0.2  setosa}
+\CommentTok{## 3          4.7         3.2          1.3         0.2  setosa}
+\CommentTok{## 4          4.6         3.1          1.5         0.2  setosa}
+\CommentTok{## 5          5.0         3.6          1.4         0.2  setosa}
+\CommentTok{## 6          5.4         3.9          1.7         0.4  setosa}
+
+    \CommentTok{# number of observations for different species}
+    \KeywordTok{table}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Species)}
+\CommentTok{## }
+\CommentTok{##     setosa versicolor  virginica }
+\CommentTok{##         50         50         50}
+    
+    \CommentTok{# suppose we are interested in the mean of first 4 variables by species}
+    \KeywordTok{aggregate}\NormalTok{(iris[, }\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{], }\KeywordTok{list}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Species), mean)}
+\CommentTok{##      Group.1 Sepal.Length Sepal.Width Petal.Length Petal.Width}
+\CommentTok{## 1     setosa        5.006       3.428        1.462       0.246}
+\CommentTok{## 2 versicolor        5.936       2.770        4.260       1.326}
+\CommentTok{## 3  virginica        6.588       2.974        5.552       2.026}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{producing-figures}{%
+\section{Producing Figures}\label{producing-figures}}
+
+Data visualization is an important part for analysis. Some of the
+commonly used techniques include the histograms, bar plot, scatter plot.
+You can also customize those figures with different colors and shapes to
+facilitate the visualization. We use the iris data as an example.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# first, we produce a histogram of the Sepal.Length variable }
+    \KeywordTok{hist}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Sepal.Length, }\DataTypeTok{xlab =} \StringTok{"Sepal Length"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-10-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+    \CommentTok{# bar plot can be used to compare different variables, or the same variable in different groups}
+    \CommentTok{# the following boxplot compares Sepal.Length across different species}
+    \CommentTok{# you can easily color them}
+    \KeywordTok{boxplot}\NormalTok{(Sepal.Length }\OperatorTok{~}\StringTok{ }\NormalTok{Species, }\DataTypeTok{data=}\NormalTok{iris, }\DataTypeTok{col=}\KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{, }\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-10-2} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    
+    \CommentTok{# scatter plot is usually used for two variables}
+    \CommentTok{# but we can color them using a third, categorical varaible}
+    \CommentTok{# remeber to add legend for readability}
+    \KeywordTok{plot}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Sepal.Length, iris}\OperatorTok{$}\NormalTok{Sepal.Width, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,}
+         \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{,}\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{)[iris}\OperatorTok{$}\NormalTok{Species])}
+    \KeywordTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"setosa"}\NormalTok{, }\StringTok{"versicolor"}\NormalTok{, }\StringTok{"virginica"}\NormalTok{), }
+           \DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{,}\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-10-3} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    
+    \CommentTok{# to incorporate more than two variables, we can either use 3d plots}
+    \CommentTok{# or do pairwise plots for each pair of variables}
+    
+    \KeywordTok{pairs}\NormalTok{(iris[,}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{], }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,  }\DataTypeTok{cex =} \FloatTok{0.75}\NormalTok{, }\DataTypeTok{lower.panel=}\OtherTok{NULL}\NormalTok{,}
+          \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{,}\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{)[iris}\OperatorTok{$}\NormalTok{Species])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-10-4} \end{center}
+
+\hypertarget{read-in-and-save-data}{%
+\section{Read-in and Save Data}\label{read-in-and-save-data}}
+
+R can read-in data from many different sources such as \texttt{.txt},
+\texttt{.csv}, etc. For example, \texttt{read.csv()} can be used to
+import \texttt{.csv} files. The first argument should be specified as
+the path to the data file, or just the name of the file if the current
+working directory is the same as the data file. R objects, especially
+matrices, can be saved into these standard files. Use functions such as
+\texttt{write.table()} and \texttt{write.csv} to perform this. We can
+also save any object into \texttt{.RData} file, which can be loaded
+later on. To do this try functions \texttt{save.image()} and
+\texttt{save()}.
+
+\hypertarget{r-packages}{%
+\section{R Packages}\label{r-packages}}
+
+One of the most important features of R is its massive collection of
+packages. A package is like an add-on that can be downloaded and
+installed and perform additional function and analysis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+    \CommentTok{# The MASS package can be used to generate multivariate normal distribution }
+    \CommentTok{# This package is already included with the base R}
+    \KeywordTok{library}\NormalTok{(MASS)}
+\NormalTok{    P =}\StringTok{ }\DecValTok{4}\NormalTok{; N =}\StringTok{ }\DecValTok{200}
+\NormalTok{    V <-}\StringTok{ }\FloatTok{0.5}\OperatorTok{^}\KeywordTok{abs}\NormalTok{(}\KeywordTok{outer}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{P, }\DecValTok{1}\OperatorTok{:}\NormalTok{P, }\StringTok{"-"}\NormalTok{))}
+\NormalTok{    X =}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(}\KeywordTok{mvrnorm}\NormalTok{(N, }\DataTypeTok{mu=}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,P), }\DataTypeTok{Sigma=}\NormalTok{V))}
+    \KeywordTok{head}\NormalTok{(X, }\DecValTok{3}\NormalTok{)}
+\CommentTok{##            [,1]       [,2]       [,3]       [,4]}
+\CommentTok{## [1,]  0.5170973 -0.5084187 -0.4949838 -2.0529670}
+\CommentTok{## [2,]  0.4995059  0.5314248  0.7749723  0.8980893}
+\CommentTok{## [3,] -1.9868469 -0.9742923 -1.1977524  1.8032596}
+\end{Highlighting}
+\end{Shaded}
+
+Most packages need to be downloaded and installed. To do this, we use
+the \texttt{install.packages()} function. After the package is loaded to
+your console using \texttt{library()} we can start to utilize the
+functions within that package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# we demonstrate using a package that can produce 3d images}
+
+    \CommentTok{# to install the package}
+    \KeywordTok{install.packages}\NormalTok{(}\StringTok{"scatterplot3d"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Please note that you may not want to install a package every time the R
+markdown file is compiled.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# load the package}
+    \KeywordTok{library}\NormalTok{(scatterplot3d) }
+
+    \CommentTok{# now produce a 3d plot}
+    \KeywordTok{scatterplot3d}\NormalTok{(iris[,}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{], }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }
+                  \DataTypeTok{color=}\KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{,}\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{)[iris}\OperatorTok{$}\NormalTok{Species])}
+    \KeywordTok{legend}\NormalTok{(}\StringTok{"bottom"}\NormalTok{, }\DataTypeTok{legend =} \KeywordTok{levels}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Species), }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,}
+           \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"indianred"}\NormalTok{,}\StringTok{"deepskyblue"}\NormalTok{, }\StringTok{"darkorange"}\NormalTok{),}
+      \DataTypeTok{inset =} \FloatTok{-0.3}\NormalTok{, }\DataTypeTok{xpd =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{horiz =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{00-r-intro_files/figure-latex/unnamed-chunk-13-1} \end{center}
+
+\hypertarget{basic-functions-for-statistics}{%
+\section{Basic Functions for
+Statistics}\label{basic-functions-for-statistics}}
+
+For discrete variables, we can construct a frequency table to summerize
+the data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# Summarizes Gender vs. Group}
+    \KeywordTok{table}\NormalTok{(data[, }\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{])}
+\CommentTok{##         Group}
+\CommentTok{## Gender   patient physician engineer statistician}
+\CommentTok{##   male       128        79       34            7}
+\CommentTok{##   female     342       267      125           18}
+\end{Highlighting}
+\end{Shaded}
+
+For continuous variables, we can calculate Pearson's correlation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{); n =}\StringTok{ }\DecValTok{30}
+\NormalTok{    x =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n)}
+\NormalTok{    y =}\StringTok{ }\NormalTok{x }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\NormalTok{    z =}\StringTok{ }\NormalTok{x }\OperatorTok{+}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(n, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+    
+    \CommentTok{# Calculate Pearson's correlation and tests}
+    \KeywordTok{cor}\NormalTok{(y, z)}
+\CommentTok{## [1] 0.5810874}
+    \KeywordTok{cor.test}\NormalTok{(y, z)}
+\CommentTok{## }
+\CommentTok{##  Pearson's product-moment correlation}
+\CommentTok{## }
+\CommentTok{## data:  y and z}
+\CommentTok{## t = 3.7782, df = 28, p-value = 0.0007592}
+\CommentTok{## alternative hypothesis: true correlation is not equal to 0}
+\CommentTok{## 95 percent confidence interval:}
+\CommentTok{##  0.2792861 0.7784002}
+\CommentTok{## sample estimates:}
+\CommentTok{##       cor }
+\CommentTok{## 0.5810874}
+\end{Highlighting}
+\end{Shaded}
+
+A t-test is often used to test the difference of a continuous variable
+across two groups. For example, we test the Age differences between
+genders.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{t.test}\NormalTok{(data}\OperatorTok{$}\NormalTok{Age }\OperatorTok{~}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{Gender)}
+\CommentTok{## }
+\CommentTok{##  Welch Two Sample t-test}
+\CommentTok{## }
+\CommentTok{## data:  data$Age by data$Gender}
+\CommentTok{## t = -0.92872, df = 407.2, p-value = 0.3536}
+\CommentTok{## alternative hypothesis: true difference in means is not equal to 0}
+\CommentTok{## 95 percent confidence interval:}
+\CommentTok{##  -2.963039  1.061637}
+\CommentTok{## sample estimates:}
+\CommentTok{##   mean in group male mean in group female }
+\CommentTok{##             40.30084             41.25154}
+\end{Highlighting}
+\end{Shaded}
+
+A simple linear regression assumes the underlying model
+\(Y = \beta X + \epsilon\). With observed data, we can estimate the
+regression coefficients:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# the lm() function is the most commonly used}
+\NormalTok{    fit =}\StringTok{ }\KeywordTok{lm}\NormalTok{(y}\OperatorTok{~}\NormalTok{x)}
+    \KeywordTok{summary}\NormalTok{(fit)}
+\CommentTok{## }
+\CommentTok{## Call:}
+\CommentTok{## lm(formula = y ~ x)}
+\CommentTok{## }
+\CommentTok{## Residuals:}
+\CommentTok{##     Min      1Q  Median      3Q     Max }
+\CommentTok{## -3.0404 -1.0099 -0.4594  1.1506  3.7069 }
+\CommentTok{## }
+\CommentTok{## Coefficients:}
+\CommentTok{##             Estimate Std. Error t value Pr(>|t|)   }
+\CommentTok{## (Intercept)   0.2586     0.2964   0.873  0.39032   }
+\CommentTok{## x             1.0838     0.3249   3.336  0.00241 **}
+\CommentTok{## ---}
+\CommentTok{## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+\CommentTok{## }
+\CommentTok{## Residual standard error: 1.617 on 28 degrees of freedom}
+\CommentTok{## Multiple R-squared:  0.2844, Adjusted R-squared:  0.2588 }
+\CommentTok{## F-statistic: 11.13 on 1 and 28 DF,  p-value: 0.00241}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{writing-your-own-functions}{%
+\section{Writing Your Own Functions}\label{writing-your-own-functions}}
+
+Writing your own R function can be an interesting experience. For
+example, we can create a function that calculates the inner product of
+two vectors:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# the lm() function is the most commonly used}
+\NormalTok{    myfun <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, b)}
+\NormalTok{    \{}
+      \KeywordTok{return}\NormalTok{(a }\OperatorTok{%*%}\StringTok{ }\NormalTok{b)}
+\NormalTok{    \}}
+
+\NormalTok{    x1 =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{    x2 =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+    \KeywordTok{myfun}\NormalTok{(x1, x2)}
+\CommentTok{##           [,1]}
+\CommentTok{## [1,] -5.537335}
+\end{Highlighting}
+\end{Shaded}
+
+If we need the function to return multiple objects, we can create a
+list. The following example returns both the inner product and the
+correlation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# the lm() function is the most commonly used}
+\NormalTok{    myfun <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, b)}
+\NormalTok{    \{}
+      \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\StringTok{"prod"}\NormalTok{ =}\StringTok{ }\NormalTok{a }\OperatorTok{%*%}\StringTok{ }\NormalTok{b, }\StringTok{"cor"}\NormalTok{ =}\StringTok{ }\KeywordTok{cor}\NormalTok{(a, b)))}
+\NormalTok{    \}}
+
+    \KeywordTok{myfun}\NormalTok{(x1, x2)}
+\CommentTok{## $prod}
+\CommentTok{##           [,1]}
+\CommentTok{## [1,] -5.537335}
+\CommentTok{## }
+\CommentTok{## $cor}
+\CommentTok{## [1] -0.05558356}
+\end{Highlighting}
+\end{Shaded}
+
+In fact, most functions in R are constructed this way be cause a lot of
+information need to be stored when fitting a statistical model. You can
+always peek into a fitted object of a model and take the information you
+need.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# the output is too long, hence omitted}
+    \KeywordTok{str}\NormalTok{(fit)}
+    \KeywordTok{names}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    fit}\OperatorTok{$}\NormalTok{coefficients}
+\CommentTok{## (Intercept)           x }
+\CommentTok{##   0.2586414   1.0837726}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{numerical-optimizations}{%
+\section{Numerical Optimizations}\label{numerical-optimizations}}
+
+Coefficients in a linear regression can be solved using the formula
+
+\[\widehat \beta = (X'X)^{-1} X'Y.\]
+
+We can also treat this as an optimization problem by minimizing the
+\(\ell_2\) loss function:
+
+\[\widehat \beta = \arg\min \frac{1}{2n}\lVert Y - X\beta \rVert_2^2.\]
+
+This can be done through some numerical optimization methods
+(\textcolor{red}{although this is entirely an overkill for the problem...}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    f <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(b, X, Y)}
+\NormalTok{    \{}
+      \KeywordTok{length}\NormalTok{(Y)}\OperatorTok{^}\NormalTok{\{}\OperatorTok{-}\DecValTok{1}\NormalTok{\}}\OperatorTok{*}\FloatTok{0.5}\OperatorTok{*}\KeywordTok{sum}\NormalTok{((Y }\OperatorTok{-}\StringTok{ }\NormalTok{X }\OperatorTok{%*%}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(b))}\OperatorTok{^}\DecValTok{2}\NormalTok{)}
+\NormalTok{    \}}
+    
+    \CommentTok{# We use an optimization function: }
+    \CommentTok{# the first argument is the inital value for beta}
+    \CommentTok{# the second argument is the objective function}
+    \CommentTok{# the rest of the arguments are additional information used}
+    \CommentTok{# in calculating the objective function}
+
+\NormalTok{    solution =}\StringTok{ }\KeywordTok{optim}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), f, }\DataTypeTok{X =} \KeywordTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, x), }\DataTypeTok{Y =}\NormalTok{ y)}
+\NormalTok{    solution}\OperatorTok{$}\NormalTok{par}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2586419 1.0836772
+\end{verbatim}
+
+Many machine learning and statistical learning problems are eventually
+an optimization problem, although they are much more difficult than
+solving a linear regression.
+
+\hypertarget{get-help}{%
+\section{Get Help}\label{get-help}}
+
+To get reference about a particular function, one can put a question
+mark in front of a function name to see details:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# This will open up the web browser for the on-line document }
+\NormalTok{    ?mvrnorm}
+\NormalTok{    ?save.image}
+\end{Highlighting}
+\end{Shaded}
+
+\end{document}

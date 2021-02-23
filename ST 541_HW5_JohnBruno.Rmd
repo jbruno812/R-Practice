@@ -1,0 +1,74 @@
+---
+title: "ST 541_HW5_JohnBruno"
+author: "John Bruno"
+date: "11/11/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 2 College Football Team Dataset
+
+```{r}
+# Read data
+library("readxl")
+
+football <- read_excel("C:\\Users\\jbrun\\Desktop\\UA 2020\\Fall\\ST 541 (R)\\HW 5\\CFB2019_partial.xlsx")
+
+head(football)
+```
+
+```{r}
+# Creating win rate column
+football$winrate <- (football$win/football$Games*100)
+head(football)
+```
+
+```{r}
+# Model
+m1 <- lm(winrate ~ Off.Rank + Def.Rank + football$`First Down Rank` + football$`4th Down Rank` + football$`Penalty Rank` + football$`Sack Rank` + football$`Turnover Rank` + football$`Rushing Def Rank` + football$`Rushing Off Rank`, data=football)
+
+summary(m1)
+```
+
+# Backward Elimination Using AIC
+
+```{r}
+backAIC <- step(m1,direction="backward", data=bridge)
+```
+The process starts with all of the variables and eliminates them to further improve the AIC. 
+The best model this method found has an AIC of 603.25.
+
+
+# Backward elimination using BIC
+```{r}
+n<-length(football$winrate)
+backBIC <- step(m1,direction="backward", data=football, k=log(n))
+backBIC$coefficients
+```
+The process starts with all of the variables and eliminates them to further improve the AIC. 
+The best model this method found has an AIC of 618.92. This was different from the AIC criterion and also worse most likely due to BIC tending to prefer smaller models.
+
+# Forward selection using BIC on intercept model
+
+```{r}
+# Intercept Model
+m2 <- lm(winrate ~ 1, data=football)
+
+summary(m2)
+```
+```{r}
+forwardBIC <- step(m2,scope=list(lower=~1, 
+upper=~Off.Rank + Def.Rank + football$`First Down Rank` + football$`4th Down Rank` + football$`Penalty Rank` + football$`Sack Rank` + football$`Turnover Rank` + football$`Rushing Def Rank` + football$`Rushing Off Rank`),
+direction="forward", data=football,k=log(n))
+```
+The process starts with no variables and adds them to further improve the AIC. 
+The best model this method found has an AIC of 618.92, same as backward BIC since same criterion,
+just different methods to get to same place.
+
+# Recommendation
+
+The final model that I would recommend would be the one that used backward elimination using AIC 
+to get an AIC of 603.25, which was the best score out of the models.

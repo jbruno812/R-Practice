@@ -1,0 +1,162 @@
+---
+title: "ST 541_HW2_JohnBruno"
+author: "John Bruno"
+date: "9/19/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1 - Page 39 Question 2 From Textbook
+```{r}
+# Reading the loan data:
+    indicators <- read.table('https://gattonweb.uky.edu/sheather/book/docs/datasets/indicators.txt', header=TRUE)
+head(indicators)
+```
+# Question a: Find a 95% confidence interval for the slope of the regression model. On the basis of the confidence interval, dedide whether there is evidence of a significant negative linear association.
+
+```{r}
+indicators_lm <- lm(PriceChange ~ LoanPaymentsOverdue, indicators)
+```
+```{r}
+summary(indicators_lm)
+```
+
+```{r}
+sum_coef <- summary(indicators_lm)$coef
+print(sum_coef)
+```
+```{r}
+print(confint(indicators_lm, 'LoanPaymentsOverdue', level=0.95))
+```
+Yes, there is evidence toward a significant negative linear association, since the confidence interval are only negative.
+
+
+# Question b: Use the fitted regression model to estimate E ( Y | X =4). Find a 95% confidence
+interval for E ( Y | X =4). Is 0% a feasible value for E ( Y | X =4)? Give a
+reason to support your answer.
+
+
+```{r}
+(predict(indicators_lm, data.frame(LoanPaymentsOverdue = 4), interval="confidence"))
+```
+Since 0% is outside the 95% confidence interval, it is not a feasible value.
+
+
+# Part 2 - King County House Sales
+
+```{r}
+# Library and Reading data
+library(ggplot2)
+
+house=read.csv("kc_house_data.csv")
+head(house)
+```
+```{r}
+# Looking at data
+summary(house)
+```
+```{r}
+# Checking missing values
+NA_values=data.frame(no_of_na_values=colSums(is.na(house)))
+head(NA_values,21)
+```
+There are no missing values.
+
+
+```{r}
+# Looking Closer at Data in Price and Sqft Living
+head(house["price"])
+tail(house["price"])
+
+head(house["sqft_living"])
+tail(house["sqft_living"])
+```
+
+```{r}
+# Correlation Between Price and Sqft Living
+cor(house[,c("price", "sqft_living")])
+```
+Good positive correlation.
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+# Scatter Plot
+plot(house$price,house$sqft_living,xlab="Price", ylab="Sqft Living")
+abline(lsfit(house$price, house$sqft_living))
+```
+
+```{r}
+# Simple linear regression between "price" and "sqft_living"
+house.lm <- lm(price~sqft_living, data = house)
+summary(house.lm)
+```
+According to the R-squared, 49% of the variability in the response can be explained by my predictor.
+
+
+```{r}
+# Test for lack of fit/goodness of fit
+anova(house.lm)
+```
+The P-value is highly significant. Price does depend on sqft living.
+
+
+# Removing observations with 'sale  price' over $600,000:
+
+```{r}
+house2 <- house[ which(house$price < 600000), ]
+```
+```{r}
+# Checking max value
+max(house2["price"])
+```
+```{r}
+# Correlation Between Price and Sqft Living
+cor(house2[,c("price", "sqft_living")])
+```
+The correlation went down a decent amount removing the prices of houses that were more than 600,000.
+
+```{r}
+# Simple linear regression between "price" and "sqft_living" with new price model
+house2.lm <- lm(price~sqft_living, data = house2)
+summary(house2.lm)
+```
+```{r}
+# Test for lack of fit/goodness of fit with new price model
+anova(house2.lm)
+```
+The differences between this model and the previous are that this new one, while still highly significant, the correlation and the R-squared went down. Only 17% of the variability in the response can be explained by my predictor instead of 49%. This means that houses over $600,000 have their prices impacted much more from square footage.
+
+
+# Further removing observations with 'sqft_living' over 2,000:
+
+```{r}
+house3 <- house2[ which(house2$sqft_living < 2000), ]
+```
+```{r}
+# Checking max value
+max(house3["price"])
+max(house3["sqft_living"])
+```
+```{r}
+# Correlation Between Price and Sqft Living
+cor(house3[,c("price", "sqft_living")])
+```
+The correlation went down further removing the houses that were more than 2,000 sqft.
+
+```{r}
+# Simple linear regression between "price" and "sqft_living" with new price and sqft model
+house3.lm <- lm(price~sqft_living, data = house3)
+summary(house3.lm)
+```
+```{r}
+# Test for lack of fit/goodness of fit with new price and sqft model
+anova(house3.lm)
+```
+The differences between this model and the house2 are that this new one, while still highly significant, the correlation and the R-squared went down again. Only 8% of the variability in the response can be explained by my predictor instead of 17%. This means that houses over 2,000 sqft also have their prices impacted more from square footage. The model fits are worse in these 2 new models. Cheaper and smaller house prices aren't as impacted by square footage than larger more expensive ones.
+
+
+# Further suggestion on the study of the relationship between 'sale price' and 'sqft_living':
+
+There was a large change removing some observations, so I suspect removing outliers would make a large positive difference in the model. Also, The relationship between these seemed more exponential then linear according to the plot, so an exponential model will probably fit better.

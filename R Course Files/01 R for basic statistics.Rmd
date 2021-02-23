@@ -1,0 +1,149 @@
+---
+title: "R for basic statistics"
+author: "Qin Wang"
+date: "06/08/2020"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+options(width = 100)
+```
+
+# Installing and Using R
+
+R is a free-to-use software that is very popular in statistical computing. You can download R from https://www.r-project.org. The latest version is 3.6.1. Another software that makes using R easier is Rstudio, which is available at https://www.rstudio.com. You can find many useful on-line tutorials that help you set-up these two software. This guild is created using R Markdown (https://rmarkdown.rstudio.com/), which is a feature provided by RStudio. 
+
+
+# Descriptive statistics
+
+## Graphical summary For hw 1 q2
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+
+    library(HH)
+    library(ISwR)
+
+## charts  ##
+beer = c(3, 4, 1, 1, 3, 4, 3, 3, 1, 3, 2, 1, 2, 1, 2, 3, 2, 3, 1, 1, 1, 1, 4, 3, 1)
+
+par(mfrow=c(1,2))
+
+barplot(table(beer))
+barplot(table(beer)/length(beer))
+
+
+par(mfrow=c(1,1))
+beer.counts = table(beer) 
+names(beer.counts) = c("domestic\n can","Domestic\n bottle", "Microbrew","Import")
+pie(beer.counts, col=c("purple","green2","cyan","white"))
+```
+
+## Numerical summary for hw 1 q2
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+## numerical measure ##
+precip
+
+summary(precip)
+quantile(precip,c(.05, .10, .95))
+IQR(precip)
+
+hist(precip)
+stem(precip)
+
+boxplot(precip)
+boxplot(precip, main="scores",horizontal=TRUE)
+```
+
+## A real data example
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+salarydata<-read.table(file="C:/Users/qwang57/Google Drive/ST 452/R files/salary.txt", header=F)
+attach(salarydata)
+gender<-salarydata[,2]
+salary<-salarydata[,4]
+
+summary(salary)
+
+par(mfrow=c(3,1))
+hist(salary)
+hist(salary, freq=FALSE)
+hist(salary, breaks=20)
+
+par(mfrow=c(1,1))
+boxplot(salary)
+
+mean(salary)
+sd(salary)
+var(salary)
+
+quantile(salary)
+
+quantile(salary,(1:10)/10)
+
+qqnorm(salary)
+
+
+tapply(salary, gender, mean)
+tapply(salary, gender, sd)
+
+boxplot(salary~gender)
+```
+
+
+
+# Inferential statistics
+
+## Confidence interval
+
+### 1-sample t-CI
+$$ \bar x \pm t_{\alpha/2}~\frac{s}{n} $$
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+precip
+
+length(precip)
+summary(precip)
+sd(precip)
+
+t.test(precip, conf.level=0.95)
+
+t.test(precip, conf.level=0.95)$conf.int
+t.test(precip, conf.level=0.90)$conf.int
+t.test(precip, conf.level=0.99)$conf.int
+```
+
+
+
+
+
+### 2-sample t-CI
+$$ (\bar{x}_1-\bar{x}) \pm t_{\alpha/2}~s_p (\frac{1}{n_1} + \frac{1}{n_2}) $$
+
+```{r, collapse=TRUE, fig.width = 8, fig.height = 5, fig.align = "center", out.width = '80%'}
+nonsmokers = c(18,22,21,17,20,17,23,20,22,21)
+smokers = c(16,20,14,21,20,18,13,15,17,21)
+
+boxplot(nonsmokers,smokers,ylab="Scores on Digit Span Task",
+         names=c("nonsmokers","smokers"),
+         main="Digit Span Performance by\n Smoking Status")
+
+# Equal variance case
+t.test(nonsmokers,smokers, var.equal=TRUE)
+
+# Unequal variance case
+t.test(nonsmokers,smokers)
+```
+
+
+
+
+

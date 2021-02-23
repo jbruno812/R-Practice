@@ -1,0 +1,157 @@
+---
+title: "ST 541_HW1_JohnBruno"
+author: "John Bruno"
+date: "9/8/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1 - Auto
+
+```{r}
+# Reading the auto mpg data:
+    auto.mpg <- read.table("C:/Users/jbrun/Downloads/auto-mpg.data", quote="\"", comment.char="")
+    View(auto.mpg)
+```
+
+```{r}
+# Changed column names:
+colnames(auto.mpg) <- c("mpg","cylinders","displacement","horsepower","weight","acceleration","model year","origin","car name")
+```
+
+
+```{r}
+# Changed appropriate columns to numeric:
+auto.mpg.new<-auto.mpg[auto.mpg$horsepower!="?", ]
+auto.mpg.new$horsepower <- as.numeric(auto.mpg.new$horsepower)
+is.numeric(auto.mpg.new$horsepower)
+```
+# Graphical summary for mpg, horsepower, and weight
+```{r} 
+# mpg:
+hist(auto.mpg.new$mpg)
+boxplot(auto.mpg.new$mpg)
+```
+
+```{r}
+# hp:
+hist(auto.mpg.new$horsepower)
+boxplot(auto.mpg.new$horsepower)
+```
+
+
+```{r}
+# weight:
+hist(auto.mpg.new$weight)
+boxplot(auto.mpg.new$weight)
+```
+# Numerical summary for mpg, horsepower, and weight
+```{r}
+# mpg, hp, weight summary and correlation:
+summary(auto.mpg.new[, c(1,4,5)])
+cor(auto.mpg.new[, c(1,4,5)])
+```
+
+# Graphical summary for mpg, horsepower, and weight by origin (US, EU, JPN):
+```{r}
+# mpg:
+boxplot(auto.mpg.new$mpg~auto.mpg.new$origin)
+```
+```{r}
+# hp:
+boxplot(auto.mpg.new$horsepower~auto.mpg.new$origin)
+```
+
+
+```{r}
+# weight:
+boxplot(auto.mpg.new$weight~auto.mpg.new$origin)
+```
+
+# Conclusions on above summaries
+
+The average mpg is 23. In the 10-30 range, there is a steep drop-off below 10 and above 30. The average horsepower is just over 100 with the most of the range between 75-125 and lowest 50, also having some cars reaching over 200. The average weight is almost 3000 lbs. The range is mostly between 2200 and 3600 while the min and max is about 1600 and 5100, respectively. From the correlation, it suggests that generally, the heavier the car, the worse the mpg but higher the horsepower and vice-versa. In relation to the origins. Mpg is generally the worst in the U.S., then Europe, and Japan had the highest. Regarding horsepower, generally the U.S. had the highest, and EU and Japan had similar figures with Europe having a slightly higher average. As for the weights, U.S had a much higher average weight and range of weights, then Europe, followed by Japan having similar average weights to Europe but a much lower range.
+
+
+# Part 2 - Student Performance
+
+
+```{r}
+# Load package
+library(tidyverse)
+```
+```{r}
+# Read file
+examscore <- read.csv("C:/Users/jbrun/Desktop/UA 2020/Fall/ST 541 (R)/HW 1/StudentsPerformance.csv")
+```
+ 
+Summaries for math, reading, and writing scores:
+
+```{r}
+# Math Scores
+boxplot(examscore$math.score)
+```
+```{r}
+# Reading Scores
+boxplot(examscore$reading.score)
+```
+```{r}
+# Writing Scores
+boxplot(examscore$writing.score)
+```
+
+```{r}
+# Numerical math, reading, and writing score data
+summary(examscore[, c(6,7,8)])
+cor(examscore[, c(6,7,8)])
+```
+
+
+```{r}
+# Pairwise Scatterplot
+scores=examscore[, c(6,7,8)]
+pairs(scores)
+```
+This shows visually what we saw in the numerical correlation, that reading and writing have an especially strong positive correlation.
+
+# Test Scores In Relation To The Test Preparation Course
+
+```{r}
+# Math and Test Prep
+boxplot(examscore$math.score~examscore$test.preparation.course)
+```
+```{r}
+# Reading and Test Prep
+boxplot(examscore$reading.score~examscore$test.preparation.course)
+```
+
+```{r}
+# Writing and Test Prep
+boxplot(examscore$writing.score~examscore$test.preparation.course)
+```
+
+Checking if these are statistically significant differences:
+
+```{r}
+# Math t-test
+t.test(math.score~test.preparation.course,data=examscore)
+```
+The math score change is statistically different.
+
+
+```{r}
+# Writing t-test
+t.test(writing.score~test.preparation.course,data=examscore)
+```
+The writing score change is statistically different.
+
+
+```{r}
+# Reading t-test
+t.test(reading.score~test.preparation.course,data=examscore)
+```
+The reading score change is statistically different.
+

@@ -1,0 +1,352 @@
+---
+title: "Introduction to R"
+author: "Qin Wang or"
+date: "07/19/2019"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+options(width = 1000)
+```
+
+# Installing and Using R
+
+R is a free-to-use software that is very popular in statistical computing. You can download R from https://www.r-project.org. The latest version is 3.6.1. Another software that makes using R easier is Rstudio, which is available at https://www.rstudio.com. You can find many useful on-line tutorials that help you set-up these two software. This guild is created using R Markdown (https://rmarkdown.rstudio.com/), which is a feature provided by RStudio. 
+
+
+# Basic Mathematical Operations
+
+We will start with some basic operations. Try type-in the following commands into your R console and start to explore yourself. Most of them are self-explanatory. Lines with a `#` in the front are comments, which will not be executed. For displaying, lines with `##` in the front in the following chunk of code are outputs from the previous line. This is a particular feature created by R Markdown, which integrates text and code in a single document.
+\vspace{12pt}
+
+```{r, collapse=TRUE}
+    # Basic mathematics
+    1 + 3
+    3*5
+    3^5
+    exp(2)
+    log(3)
+    log2(3)
+    factorial(5)
+```
+\vspace{12pt}
+
+Most of our operations will be performed on data objects, such as vectors and matrices. They can be created within R, loaded from existing package or read-in from a file (to be discussed later on). For now, let's create them in R. Note that for data objects, common mathematical operations can be performed such as matrix multiplication, using the `%*%` sign. 
+
+```{r, collapse=TRUE}
+    # vector
+    c(1,2,3,4)
+    # matrix 
+    matrix(c(1,2,3,4), 2, 2)
+    # create matrix from vectors 
+    x = c(1,1,1,0,0,0); y = c(1,0,1,0,1,0)
+    cbind(x,y)
+    # matrix multiplication
+    matrix(c(1,2,3,4), 2, 2) %*% t(cbind(x,y))
+    # some simple operations 
+    x[3]
+    x[2:5]
+    cbind(x,y)[1:2, ]
+    x + 1
+    length(x)
+    dim(cbind(x,y))
+```
+
+# Random Number Generations from a Distribution
+
+Random number generation is important for statistical simulation. R provides functions to generate random observations from a given distribution. For example, the normal distribution and the binomial distribution. Usually, random number generation function starts with '`r`' and then the distribution name. For example, `rnorm()`,  `rt()`, `rbinom()`, etc. 
+
+```{r, collapse=TRUE}
+    # generate 10 Bernoulli random variables as a vector
+    rbinom(n=10, size = 1, prob = 0.5)
+    # 10 random normally distributed variables
+    rnorm(n=10, mean = 0, sd = 2)
+```
+
+We can also calculate the probability density function (pdf) and cumulative distribution function (cdf) of random variables. For example, the normal pdf and cdf function can be evaluated on a sequence of points, which can be visualized on a plot. 
+
+```{r, collapse=TRUE, fig.width = 6, fig.height = 4, fig.align = "center", out.width = '50%'}
+    # generate a sequence of numbers from -2 to 2
+    x = seq(-2, 2, by = 0.2)
+    # calculate normal pdf on these points
+    fx = dnorm(x, mean = 0, sd = 1)
+    
+    # plot them in a figure
+    plot(x, fx, pch = 16)
+```
+
+\vspace{12pt}
+If we need to replicate the results, we can set a random seed
+
+```{r, collapse=TRUE}
+    # after setting the seed, the random generation will follow a particular sequence
+    set.seed(697)
+    rnorm(n=4, mean = 1, sd = 2)
+    
+    # if we don't reset the seed, a new set of random numbers will be generated 
+    rnorm(n=4, mean = 1, sd = 2)
+    
+    # if we rest the seed, we will replicate exactly the same results as the first vector
+    set.seed(697)
+    rnorm(n=4, mean = 1, sd = 2)
+```
+
+# Descriptive Statistics of Data
+
+\vspace{12pt}
+Statistical functions that provide a summary of the data
+
+```{r, collapse=TRUE}
+    x = rnorm(n=100, mean = 1, sd = 2)
+    y = rnorm(n=100, mean = 2, sd = 1)
+    sum(x)
+    mean(x)
+    var(x)
+    median(x)
+    quantile(x, c(0.25, 0.5, 0.75))
+    cor(x, y)
+```
+
+\vspace{12pt}
+For discrete data, we usually use the table function
+
+```{r, collapse=TRUE}
+    set.seed(1); n = 1000
+    x = rbinom(n, size = 1, prob = 0.75)
+    y = rbinom(n, size = 3, prob = c(0.4, 0.3, 0.2, 0.1))
+    table(x)
+    
+    # this will be a cross table
+    table(x, y)
+```
+
+For a mixture of discrete and continuous data (multiple variables), we often use a data.frame
+
+```{r, collapse = TRUE}
+    # data.frame is a special data structure that can store both factor and numeric variables
+    z = runif(n, min = 18, max = 65)
+    data = data.frame("Gender" = as.factor(x), "Group" = as.factor(y), "Age" = z)
+    levels(data$Gender) = c("male", "female")
+    levels(data$Group) = c("patient", "physician", "engineer", "statistician")
+    
+    # a peek at the top 3 entries of the data
+    head(data, 3)
+    
+    # a brief summary
+    summary(data)
+```
+
+As a real example, we take the classical `iris` data, which can be loaded directly from R. 
+
+```{r, collapse = TRUE}
+    # read-in the data
+    data(iris)
+    
+    # a peek at the top observations 
+    head(iris)
+
+    # number of observations for different species
+    table(iris$Species)
+    
+    # suppose we are interested in the mean of first 4 variables by species
+    aggregate(iris[, 1:4], list(iris$Species), mean)
+```
+
+# Producing Figures
+
+Data visualization is an important part for analysis. Some of the commonly used techniques include the histograms, bar plot, scatter plot. You can also customize those figures with different colors and shapes to facilitate the visualization. We use the iris data as an example. 
+
+```{r, collapse = TRUE, fig.width = 6, fig.height = 5, fig.align = "center", out.width = '50%'}
+    # first, we produce a histogram of the Sepal.Length variable 
+    hist(iris$Sepal.Length, xlab = "Sepal Length")
+
+    # bar plot can be used to compare different variables, or the same variable in different groups
+    # the following boxplot compares Sepal.Length across different species
+    # you can easily color them
+    boxplot(Sepal.Length ~ Species, data=iris, col=c("indianred", "deepskyblue", "darkorange"))
+    
+    # scatter plot is usually used for two variables
+    # but we can color them using a third, categorical varaible
+    # remeber to add legend for readability
+    plot(iris$Sepal.Length, iris$Sepal.Width, pch = 19,
+         col = c("indianred","deepskyblue", "darkorange")[iris$Species])
+    legend("topright", c("setosa", "versicolor", "virginica"), 
+           pch = 19, col = c("indianred","deepskyblue", "darkorange"))
+    
+    # to incorporate more than two variables, we can either use 3d plots
+    # or do pairwise plots for each pair of variables
+    
+    pairs(iris[,1:4], pch = 19,  cex = 0.75, lower.panel=NULL,
+          col = c("indianred","deepskyblue", "darkorange")[iris$Species])
+```
+
+# Read-in and Save Data
+
+R can read-in data from many different sources such as `.txt`, `.csv`, etc. For example, `read.csv()` can be used to import `.csv` files. The first argument should be specified as the path to the data file, or just the name of the file if the current working directory is the same as the data file. R objects, especially matrices, can be saved into these standard files. Use functions such as `write.table()` and `write.csv` to perform this. We can also save any object into `.RData` file, which can be loaded later on. To do this try functions `save.image()` and `save()`.
+
+# R Packages
+
+One of the most important features of R is its massive collection of packages. A package is like an add-on that can be downloaded and installed and perform additional function and analysis. 
+
+```{r, collapse=TRUE}
+
+    # The MASS package can be used to generate multivariate normal distribution 
+    # This package is already included with the base R
+    library(MASS)
+    P = 4; N = 200
+    V <- 0.5^abs(outer(1:P, 1:P, "-"))
+    X = as.matrix(mvrnorm(N, mu=rep(0,P), Sigma=V))
+    head(X, 3)
+```
+
+Most packages need to be downloaded and installed. To do this, we use the `install.packages()` function. After the package is loaded to your console using `library()` we can start to utilize the functions within that package.
+
+```{r, collapse=TRUE, eval= FALSE}
+    # we demonstrate using a package that can produce 3d images
+
+    # to install the package
+    install.packages("scatterplot3d")
+```    
+
+Please note that you may not want to install a package every time the R markdown file is compiled. 
+
+
+```{r, collapse=TRUE, fig.width = 6, fig.height = 5, fig.align = "center", out.width = '50%'}
+    # load the package
+    library(scatterplot3d) 
+
+    # now produce a 3d plot
+    scatterplot3d(iris[,1:3], pch = 19, 
+                  color=c("indianred","deepskyblue", "darkorange")[iris$Species])
+    legend("bottom", legend = levels(iris$Species), pch = 19,
+           col = c("indianred","deepskyblue", "darkorange"),
+      inset = -0.3, xpd = TRUE, horiz = TRUE)
+```
+
+# Basic Functions for Statistics
+
+For discrete variables, we can construct a frequency table to summerize the data.
+
+```{r, collapse=TRUE}
+    # Summarizes Gender vs. Group
+    table(data[, 1:2])
+```
+
+For continuous variables, we can calculate Pearson's correlation. 
+
+```{r, collapse=TRUE}
+    set.seed(1); n = 30
+    x = rnorm(n)
+    y = x + rnorm(n, sd = 2)
+    z = x + rnorm(n, sd = 2)
+    
+    # Calculate Pearson's correlation and tests
+    cor(y, z)
+    cor.test(y, z)
+```
+
+A t-test is often used to test the difference of a continuous variable across two groups. For example, we test the Age differences between genders. 
+
+```{r, collapse=TRUE}
+    t.test(data$Age ~ data$Gender)
+```
+
+
+A simple linear regression assumes the underlying model $Y = \beta X + \epsilon$. With observed data, we can estimate the regression coefficients:
+
+```{r, collapse=TRUE}
+    # the lm() function is the most commonly used
+    fit = lm(y~x)
+    summary(fit)
+```
+
+# Writing Your Own Functions
+
+Writing your own R function can be an interesting experience. For example, we can create a function that calculates the inner product of two vectors: 
+
+```{r, collapse=TRUE}
+    # the lm() function is the most commonly used
+    myfun <- function(a, b)
+    {
+      return(a %*% b)
+    }
+
+    x1 = rnorm(100)
+    x2 = rnorm(100)
+    myfun(x1, x2)
+```
+
+If we need the function to return multiple objects, we can create a list. The following example returns both the inner product and the correlation. 
+
+```{r, collapse=TRUE}
+    # the lm() function is the most commonly used
+    myfun <- function(a, b)
+    {
+      return(list("prod" = a %*% b, "cor" = cor(a, b)))
+    }
+
+    myfun(x1, x2)
+```
+
+In fact, most functions in R are constructed this way be cause a lot of information need to be stored when fitting a statistical model. You can always peek into a fitted object of a model and take the information you need. 
+
+
+```{r, collapse=TRUE, eval = FALSE}
+    # the output is too long, hence omitted
+    str(fit)
+    names(fit)
+```
+
+```{r, collapse=TRUE}
+    fit$coefficients
+```
+
+# Numerical Optimizations
+
+Coefficients in a linear regression can be solved using the formula
+
+$$\widehat \beta = (X'X)^{-1} X'Y.$$
+
+We can also treat this as an optimization problem by minimizing the $\ell_2$ loss function: 
+
+$$\widehat \beta = \arg\min \frac{1}{2n}\lVert Y - X\beta \rVert_2^2.$$
+
+This can be done through some numerical optimization methods (\textcolor{red}{although this is entirely an overkill for the problem...}):
+
+```{r}
+    f <- function(b, X, Y)
+    {
+      length(Y)^{-1}*0.5*sum((Y - X %*% as.matrix(b))^2)
+    }
+    
+    # We use an optimization function: 
+    # the first argument is the inital value for beta
+    # the second argument is the objective function
+    # the rest of the arguments are additional information used
+    # in calculating the objective function
+
+    solution = optim(rep(0, 2), f, X = cbind(1, x), Y = y)
+    solution$par
+```
+
+Many machine learning and statistical learning problems are eventually an optimization problem, although they are much more difficult than solving a linear regression. 
+
+# Get Help
+
+To get reference about a particular function, one can put a question mark in front of a function name to see details: 
+
+```{r, collapse=TRUE, eval = FALSE}
+    # This will open up the web browser for the on-line document 
+    ?mvrnorm
+    ?save.image
+```
+
